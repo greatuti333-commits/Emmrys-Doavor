@@ -1,0 +1,320 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Browser</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #000000;
+            color: #222222;
+        }
+
+        /* Browser Header */
+        .browser-header {
+            background: #f7f9ff;
+            padding: 15px;
+            color: white;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c70505;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 16px;
+        }
+
+        .control-btn {
+            background: #3c4043;
+            color: white;
+        }
+
+        .control-btn:hover {
+            background: #5f6368;
+        }
+
+        /* Address Bar */
+        .address-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        #address {
+            flex: 1;
+            padding: 13px;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            background: #fff;
+            color: #222;
+        }
+
+        .go-btn {
+            background: #1a5cc6;
+            color: #202124;
+            font-weight: bold;
+            padding: 0 22px;
+        }
+
+        /* Home Page */
+        .home {
+            text-align: center;
+            padding: 90px 20px;
+        }
+
+        .home h1 {
+            font-size: 48px;
+            color: #4285f4;
+            margin-bottom: 15px;
+        }
+
+        .home p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            max-width: 500px;
+            margin: auto;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #640000;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box button {
+            background: #000000;
+            color: white;
+        }
+
+        .shortcuts {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .shortcut {
+            text-decoration: none;
+            color: #c60606;
+            background: white;
+            width: 100px;
+            padding: 20px 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000010;
+        }
+
+        .shortcut:hover {
+            transform: translateY(-3px);
+        }
+
+        .shortcut span {
+            display: block;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .top-bar {
+                flex-wrap: wrap;
+            }
+
+            .home h1 {
+                font-size: 36px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .address-container {
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="browser-header">
+        <div class="top-bar">
+            <div class="logo">🌐 Emmrys doavor</div>
+
+            <div class="controls">
+                <button class="control-btn"
+                    onclick="history.back()" title="Back">←</button>
+
+                <button class="control-btn"
+                    onclick="history.forward()" title="Forward">→</button>
+
+                <button class="control-btn"
+                    onclick="location.reload()" title="Reload">⟳</button>
+
+                <button class="control-btn"
+                    onclick="goHome()" title="Home">⌂</button>
+            </div>
+        </div>
+
+        <form class="address-container" onsubmit="navigate(event)">
+            <input
+                type="text"
+                id="address"
+                placeholder="Search Google or enter a website address..."
+                aria-label="www.firefox.com">
+
+            <button type="submit" class="go-btn">Go</button>
+        </form>
+    </header>
+
+    <main class="home" id="home">
+        <h1>🌐 Emmrys doavor</h1>
+        <p>Your search starts here.</p>
+
+        <form class="search-box" onsubmit="searchWeb(event)">
+            <input
+                type="text"
+                id="search"
+                placeholder="What do you want to search for?"
+                aria-label="Search the web">
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="shortcuts">
+            <a class="shortcut"
+               href="https://www.instagram.com">
+                <span>🔎</span>Google
+            </a>
+
+            <a class="shortcut"
+               href="https://www.tiktok.com">
+                <span>▶️</span>YouTube
+            </a>
+
+            <a class="shortcut"
+               href="https://www.facebook.com">
+                <span>📘</span>Facebook
+            </a>
+
+            <a class="shortcut"
+               href="https://www.wikipedia.org">
+                <span>📚</span>Wikipedia
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        MyBrowser — A simple browser interface built with HTML, CSS and JavaScript.
+    </footer>
+
+    <script>
+        function getURL(value) {
+            value = value.trim();
+
+            if (!value) {
+                return null;
+            }
+
+            // Search Google if the input is not a website address.
+            if (
+                value.includes(" ") ||
+                (!value.includes(".") &&
+                 !value.startsWith("localhost"))
+            ) {
+                return "https://www.google.com/search?q=" +
+                    encodeURIComponent(value);
+            }
+
+            // Add HTTPS if no protocol was entered.
+            if (!/^https?:\/\//i.test(value)) {
+                value = "https://" + value;
+            }
+
+            try {
+                const url = new URL(value);
+
+                if (!["http:", "https:"].includes(url.protocol)) {
+                    return null;
+                }
+
+                return url.href;
+            } catch {
+                return "https://www.google.com/search?q=" +
+                    encodeURIComponent(value);
+            }
+        }
+
+        function navigate(event) {
+            event.preventDefault();
+
+            const input = document.getElementById("address");
+            const url = getURL(input.value);
+
+            if (url) {
+                window.location.href = url;
+            }
+        }
+
+        function searchWeb(event) {
+            event.preventDefault();
+
+            const input = document.getElementById("search");
+            const url = getURL(input.value);
+
+            if (url) {
+                window.location.href = url;
+            }
+        }
+
+        function goHome() {
+            window.location.href = window.location.pathname;
+        }
+    </script>
+
+</body>
+</html>
+```
